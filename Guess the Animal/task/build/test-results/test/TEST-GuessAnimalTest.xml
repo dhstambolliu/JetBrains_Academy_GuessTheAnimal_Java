@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="GuessAnimalTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-03-06T20:26:01" hostname="DESKTOP-HNQ0AKR" time="2.439">
+  <properties/>
+  <testcase name="start" classname="GuessAnimalTest" time="2.439"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+Scenario 'animals' is started.
+
+Good morning!
+> cat
+Is it a cat?
+Good afternoon!
+> CAT
+Is it a cat?
+Good afternoon!
+> Cat
+Is it a cat?
+Good afternoon!
+> a cat
+Is it a cat?
+Good morning!
+> A cat
+Is it a cat?
+Good afternoon!
+> the cat
+Is it a cat?
+Good morning!
+> ape
+Is it an ape?
+Good evening!
+> an ape
+Is it an ape?
+Good afternoon!
+> the ape
+Is it an ape?
+Good evening!
+> a unicorn
+Is it a unicorn?
+Good evening!
+> a xantic sargo
+Is it a xantic sargo?
+Good afternoon!
+> xantic sargo
+Is it a xantic sargo?
+Good afternoon!
+> an xeme
+Is it an xeme?
+Good morning!
+> RacOON
+Is it a racoon?
+Good evening!
+> dog
+Is it a dog?
+Good evening!
+> a dog
+Is it a dog?
+Good afternoon!
+> the dog
+Is it a dog?
+Good evening!
+> owl
+Is it an owl?
+Good evening!
+> an owl
+Is it an owl?
+Good afternoon!
+> the owl
+Is it an owl?
+?[1;31m
+Start test 2?[0m
+Scenario 'positive-answers' is started.
+
+Good afternoon!
+> cat
+Is it a cat?
+> y
+You answered: Yes
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> Y
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> y.
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> Y.
+You answered: Yes
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> y!
+You answered: Yes
+
+See you soon!
+Good morning!
+> cat
+Is it a cat?
+> Y!
+You answered: Yes
+
+Bye!
+Good morning!
+> cat
+Is it a cat?
+>    Yes
+You answered: Yes
+
+Bye!
+Good afternoon!
+> cat
+Is it a cat?
+> Yes   
+You answered: Yes
+
+Have a nice day!
+Good morning!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> Yes
+You answered: Yes
+
+Bye!
+Good evening!
+> cat
+Is it a cat?
+> YES
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> yes.
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> Yes!
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> YES!
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> yES!
+You answered: Yes
+
+See you soon!
+Good morning!
+> cat
+Is it a cat?
+> YeS
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> Yeah
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> yeah
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> Yeah!
+You answered: Yes
+
+Have a nice day!
+Good morning!
+> cat
+Is it a cat?
+> YeAh.
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> YEAH
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> yep
+You answered: Yes
+
+Bye!
+Good morning!
+> cat
+Is it a cat?
+> yEp
+You answered: Yes
+
+See you soon!
+Good morning!
+> cat
+Is it a cat?
+> Yep!
+You answered: Yes
+
+Have a nice day!
+Good morning!
+> cat
+Is it a cat?
+> YEP.
+You answered: Yes
+
+Have a nice day!
+Good evening!
+> cat
+Is it a cat?
+> sure
+You answered: Yes
+
+Bye!
+Good morning!
+> cat
+Is it a cat?
+> Sure!
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> SURE!
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> surE.
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> right
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> Right.
+You answered: Yes
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> Right!
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> affirmative
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> Affirmative!
+You answered: Yes
+
+Bye!
+Good evening!
+> cat
+Is it a cat?
+> correct
+You answered: Yes
+
+Have a nice day!
+Good evening!
+> cat
+Is it a cat?
+> correct.
+You answered: Yes
+
+Bye!
+Good afternoon!
+> cat
+Is it a cat?
+> indeed
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> you bet
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> exactly
+You answered: Yes
+
+Bye!
+?[1;31m
+Start test 3?[0m
+Scenario 'negative-answers' is started.
+
+Good afternoon!
+> cat
+Is it a cat?
+> n
+You answered: No
+
+See you soon!
+Good morning!
+> cat
+Is it a cat?
+> N
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> n.
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> N.
+You answered: No
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> n!
+You answered: No
+
+Have a nice day!
+Good evening!
+> cat
+Is it a cat?
+> N!
+You answered: No
+
+Bye!
+Good morning!
+> cat
+Is it a cat?
+>    No
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> No   
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> no
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> nO
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> NO
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> No
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> no.
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> no!
+You answered: No
+
+Bye!
+Good evening!
+> cat
+Is it a cat?
+> No!
+You answered: No
+
+Bye!
+Good afternoon!
+> cat
+Is it a cat?
+> NO!
+You answered: No
+
+Bye!
+Good afternoon!
+> cat
+Is it a cat?
+> no way
+You answered: No
+
+Bye!
+Good morning!
+> cat
+Is it a cat?
+> no way!
+You answered: No
+
+Bye!
+Good evening!
+> cat
+Is it a cat?
+> No Way!
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> NO WAY!
+You answered: No
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> no waY.
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> nah
+You answered: No
+
+See you soon!
+Good morning!
+> cat
+Is it a cat?
+> Nah.
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> NAH!
+You answered: No
+
+See you soon!
+Good morning!
+> cat
+Is it a cat?
+> naH
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> nope
+You answered: No
+
+Have a nice day!
+Good afternoon!
+> cat
+Is it a cat?
+> NoPe!
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> NOPE.
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> negative
+You answered: No
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> Negative.
+You answered: No
+
+Bye!
+?[1;31m
+Start test 4?[0m
+Scenario 'unclear-answers' is started.
+
+Good evening!
+> cat
+Is it a cat?
+> y..
+I'm not sure I caught you: was it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> Y!.
+I'm not sure I caught you: was it yes or no?
+Good evening!
+> cat
+Is it a cat?
+> ye
+Funny, I still don't understand, is it yes or no?
+Good morning!
+> cat
+Is it a cat?
+> jes
+Could you please simply say yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> Jes
+Could you please simply say yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> yes...
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> да
+Could you please simply say yes or no?
+Good morning!
+> cat
+Is it a cat?
+> Так
+Oh, it's too complicated for me: just tell me yes or no.
+Good afternoon!
+> cat
+Is it a cat?
+> yes, yes
+I'm not sure I caught you: was it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> Yea
+Oh, it's too complicated for me: just tell me yes or no.
+Good afternoon!
+> cat
+Is it a cat?
+> Ja
+Funny, I still don't understand, is it yes or no?
+Good evening!
+> cat
+Is it a cat?
+> Jawohl!
+I'm not sure I caught you: was it yes or no?
+Good morning!
+> cat
+Is it a cat?
+> ja natürlich!
+Funny, I still don't understand, is it yes or no?
+Good evening!
+> cat
+Is it a cat?
+> so genau
+Come on, yes or no?
+Good morning!
+> cat
+Is it a cat?
+> 1
+Oh, no, don't try to confuse me: say yes or no.
+Good afternoon!
+> cat
+Is it a cat?
+> +
+I'm not sure I caught you: was it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> yepi
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> Yep!!
+I'm not sure I caught you: was it yes or no?
+Good morning!
+> cat
+Is it a cat?
+> Yes, sure!
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> Ok
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> Rights
+Oh, no, don't try to confuse me: say yes or no.
+Good evening!
+> cat
+Is it a cat?
+> affErmative
+Funny, I still don't understand, is it yes or no?
+Good morning!
+> cat
+Is it a cat?
+> n..
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> N!!
+I'm not sure I caught you: was it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> nea
+Could you please simply say yes or no?
+Good evening!
+> cat
+Is it a cat?
+> nop
+I'm not sure I caught you: was it yes or no?
+Good morning!
+> cat
+Is it a cat?
+> noppi
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> no wa
+Oh, it's too complicated for me: just tell me yes or no.
+Good afternoon!
+> cat
+Is it a cat?
+> no way!!!
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> na
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> nahi
+Could you please simply say yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> nega
+Could you please simply say yes or no?
+Good evening!
+> cat
+Is it a cat?
+> negat
+I'm not sure I caught you: was it yes or no?
+Good evening!
+> cat
+Is it a cat?
+> negati
+Come on, yes or no?
+Good evening!
+> cat
+Is it a cat?
+> negativ
+Come on, yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> i don't think..
+Could you please simply say yes or no?
+Good evening!
+> cat
+Is it a cat?
+> i don't
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> i
+Oh, it's too complicated for me: just tell me yes or no.
+Good evening!
+> cat
+Is it a cat?
+> I no
+Oh, it's too complicated for me: just tell me yes or no.
+Good afternoon!
+> cat
+Is it a cat?
+> i don't think so...
+I'm not sure I caught you: was it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> null
+Oh, it's too complicated for me: just tell me yes or no.
+?[1;31m
+Start test 5?[0m
+Good afternoon!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+Bye!
+Good afternoon!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+Bye!
+Good afternoon!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+Bye!
+Good evening!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+See you soon!
+Good evening!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+See you soon!
+Good afternoon!
+> cat
+Is it a cat?
+> yes
+You answered: Yes
+
+Have a nice day!
+?[1;31m
+Start test 6?[0m
+Good evening!
+> cat
+Is it a cat?
+> #
+Oh, no, don't try to confuse me: say yes or no.
+Good evening!
+> cat
+Is it a cat?
+> #
+I'm not sure I caught you: was it yes or no?
+Good evening!
+> cat
+Is it a cat?
+> #
+Funny, I still don't understand, is it yes or no?
+Good evening!
+> cat
+Is it a cat?
+> #
+Oh, no, don't try to confuse me: say yes or no.
+Good morning!
+> cat
+Is it a cat?
+> #
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> #
+Funny, I still don't understand, is it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> #
+Oh, it's too complicated for me: just tell me yes or no.
+Good morning!
+> cat
+Is it a cat?
+> #
+Oh, it's too complicated for me: just tell me yes or no.
+Good afternoon!
+> cat
+Is it a cat?
+> #
+I'm not sure I caught you: was it yes or no?
+Good afternoon!
+> cat
+Is it a cat?
+> #
+Funny, I still don't understand, is it yes or no?
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
