@@ -1,15 +1,327 @@
 type: edu
 custom_name: Ĉu ĝi estas la kato?
 files:
-- name: src/animals/Main.java
-  visible: true
-  text: |
-    package animals;
+- name: test/GuessAnimalTest.java
+  visible: false
+  text: |-
+    import org.hyperskill.hstest.dynamic.DynamicTest;
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
 
-    public class Main {
+    import java.io.File;
+    import java.io.IOException;
+    import java.util.Locale;
+    import java.util.stream.Stream;
+
+    public class GuessAnimalTest extends StageTest<String> {
+
+        String[] languages = new String[]{"en", "eo"};
+
+        @DynamicTest(data = "languages")
+        CheckResult testLanguages(final String language) throws IOException {
+            final var fileName = "animals" + ("en".equals(language) ? "." : "_" + language + ".");
+
+            final var locale = Locale.getDefault();
+            final var systemLanguage = System.getProperty("user.language");
+            Locale.setDefault(new Locale(language));
+            System.setProperty("user.language", language);
+
+            deleteFiles(fileName);
+            final var result = new Scenario(language).check();
+            deleteFiles(fileName);
+
+            Locale.setDefault(locale);
+            System.setProperty("user.language", systemLanguage);
+
+            return result;
+        }
+
+        private void deleteFiles(String fileName) {
+            Stream.of("yaml", "json", "xml")
+                    .map(fileName::concat)
+                    .map(File::new)
+                    .filter(File::exists)
+                    .forEach(File::delete);
+        }
     }
   learner_created: false
+- name: test/Scenario.java
+  visible: false
+  text: |-
+    import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testing.TestedProgram;
+
+    import java.io.File;
+    import java.io.IOException;
+    import java.util.Map;
+    import java.util.function.Predicate;
+    import java.util.regex.Pattern;
+
+    import static java.text.MessageFormat.format;
+    import static java.util.function.Predicate.not;
+    import static org.hyperskill.hstest.testcase.CheckResult.correct;
+    import static org.hyperskill.hstest.testcase.CheckResult.wrong;
+
+    public class Scenario {
+        private TestedProgram main;
+        private String output = "";
+        private final File dataFile;
+        private final File scriptFile;
+
+        Scenario(String name) {
+            dataFile = new File("test/" + name + ".data.yaml");
+            scriptFile = new File("test/" + name + ".script.yaml");
+            System.out.println("Scenario '" + name + "' is started.");
+            System.out.println();
+        }
+
+        CheckResult check() {
+
+            final Object[][] data;
+            final String[][] script;
+
+            try {
+                data = new YAMLMapper().readValue(dataFile, String[][].class);
+                script = new YAMLMapper().readValue(scriptFile, String[][].class);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return wrong("Cannot find the files "
+                        + dataFile.getName()
+                        + " or "
+                        + scriptFile.getName()
+                        + ", looks like you deleted or renamed it. Please, revert the changes.");
+            }
+
+            for (var values : data) {
+                for (var action : script) {
+                    final var command = action[0];
+                    switch (command) {
+                        case "start":
+                            main = new TestedProgram();
+                            output = action.length == 1
+                                    ? main.start()
+                                    : main.start(format(action[1], values).split(" "));
+                            output = output.trim().toLowerCase();
+                            continue;
+                        case "input":
+                            output = main.execute(format(action[1], values)).trim().toLowerCase();
+                            continue;
+                        case "finish":
+                            if (main.isFinished()) {
+                                continue;
+                            }
+                            return wrong(format(action[1], values));
+                        default:
+                            final Map<String, Predicate<String>> validation = Map.of(
+                                    "contains", output::contains,
+                                    "not contains", not(output::contains),
+                                    "file exists", file -> new File(file).exists(),
+                                    "file delete", file -> new File(file).delete(),
+                                    "find", pattern -> Pattern.compile(pattern).matcher(output).find(),
+                                    "matches", output::matches);
+
+                            final var expected = format(action[1], values);
+                            if (validation.get(command).test(expected)) {
+                                continue;
+                            }
+                            final var feedback = format(action[2], values) + System.lineSeparator()
+                                    + "Expected " + command + ": \"" + expected + "\"" + System.lineSeparator()
+                                    + "Actual data is: \"" + output + "\".";
+                            return wrong(feedback);
+                    }
+                }
+            }
+            return correct();
+        }
+
+    }
+  learner_created: false
+- name: test/eo.script.yaml
+  visible: false
+  text: |+
+    #
+    # There is a scenario of parameterized test for Esperanto language.
+    #
+    ---
+    - [start, "-type {0}"] # We will test three different file formats: JSON, YAML, XML
+    - - contains
+      - "kiun beston vi plej ŝatas?"
+      - "[Esperanto] When no Knowledge Tree is created yet the program should ask for a favourite animals at first."
+    - [input, kato]
+    - - contains
+      - bonvenon al la sperta sistemo de la besto!
+      - "[Esperanto] After entering the favourite animal the program should welcome the user and represent itself as an expert system"
+
+    #
+    # Start the menu
+    #
+    - - matches
+      - (?si).*Ludi.*Listo.*Serĉi.*Kalkuli.*Eliri.*
+      - "[Esperanto] The program should display the menu"
+
+    #
+    # Let's play the game!
+    #
+    - [input, 1]
+    - - contains
+      - vi pensu pri besto, kaj mi divenos ĝin.
+      - "[Esperanto] The program should asks the user to think of an animal"
+    - - contains
+      - premu enen kiam vi pretas.
+      - "[Esperanto] The computer should make a pause before the game."
+    - [input, ""]
+
+    #
+    # After user press Enter the game started!
+    #
+    - - contains
+      - ĉu ĝi estas kato?
+      - "[Esperanto] The very first question in the very first game should undoubtedly be about a beloved animal."
+    - [input, ne] # We think of about other animal, not about the cat
+    - - contains
+      - mi rezignas. kiun beston vi havas en la kapo?
+      - "[Esperanto] If the program cannot guess the animal, it must give up."
+    - [input, hundo] # Of course, our second animal is a dog!
+    - - contains
+      - indiku fakton, kiu distingas kato de hundo
+      - "[Esperanto] The program should find out how one animal differs from another."
+    - - input
+      - ĝi povas surgrimpi arbon
+    - - contains
+      - ĉu la aserto ĝustas por la hundo?
+      - "[Esperanto] The program should clarify if the statement is correct for a dog."
+    - [input, ne]
+
+    - - contains
+      - la kato povas surgrimpi arbon
+      - The program must generate the correct fact for the first animal.
+
+    - - contains
+      - la hundo ne povas surgrimpi arbon
+      - "[Esperanto] The program must generate the correct fact for the second animal."
+
+    - - matches
+      - "(?is).*(denove|ripeti|ankoraŭ).*"
+      - "[Esperanto] The program should ask the user to play again"
+    - [input, jes] # Yes, we will play once again
+    - [input, ""] # Press ENTER
+    - - contains
+      - povas surgrimpi arbon?
+      - "[Esperanto] After the first game, the starting question should be the question of fact."
+    - [input, jes]
+    - [contains, "ĉu ĝi estas kato?", "[Esperanto] The program must assume that the animal is a cat."]
+    - - input
+      - |
+        ne
+        linko
+        ĝi loĝas en la arbaro
+        jes
+        ne
+    # We finish the game.
+    - - matches
+      - (?si).*Ludi.*Listo.*Serĉi.*Kalkuli.*Eliri.*
+      - "[Esperanto] The program should display the menu"
+    - [input, "0"] # Exit from the application
+    - - matches
+      - "(?si).*(ĝis|estis).*"
+      - "[Esperanto] How about to say goodbye to the user?"
+    - [finish, "The program should finish when user exit"]
+    - - file exists
+      - "animals_eo.{0}"
+      - "The program should save knowledge tree to animals_eo.{0} file."
+    #
+    # After the first session the program created and save the Knowledge Tree
+    # We will run the program again to make sure that all data was saved and restored correctly.
+    #
+    - [start, "-type {0}"]
+    - - not contains
+      - kiun beston vi plej ŝatas?
+      - "[Esperanto] If the tree of knowledge exists, then the program should not ask the user about his favorite animal."
+    - - contains
+      - bonvenon al la sperta sistemo de la besto!
+      - "[Esperanto] The program should immediately greet the user after starting."
+    - - matches
+      - (?si).*Ludi.*Listo.*Serĉi.*Kalkuli.*Eliri.*
+      - "[Esperanto] The program should display the menu"
+
+    #
+    # Let's check which animals are now in our knowledge tree.
+    #
+    - [input, "2"]
+    - - matches
+      - (?si).*hundo.*kato.*linko.*
+      - "[Esperanto] The program should print a list of all animals in alphabetical order."
+
+    #
+    # Check the facts about the animal
+    #
+    - [input, "3"]
+    - - find
+      - enigu .* besto
+      - "[Esperanto] The program should ask the user to enter the name of the animal"
+    - [input, linko]
+    - - contains
+      - faktoj pri la linko
+      - "[Esperanto] The program must find the animal that is in the knowledge tree."
+    - - contains
+      - ĝi povas surgrimpi arbon
+      - "[Esperanto] The program did not print the first fact about the animal"
+    - - contains
+      - ĝi loĝas en la arbaro
+      - "[Esperanto] The program did not print the second fact about the animal"
+
+    #
+    # Check the knowledge tree statistics
+    #
+    - [input, "4"]
+    - [contains, "la statistiko", "The header for the table must be printed"]
+
+    - - matches
+      - (?is).*radika nodo.*povas surgrimpi arbon.*
+      - "[Esperanto] The root element in our tree must be a statement"
+
+    - - matches
+      - (?is).*nombro de nodoj[^\\R]*5.*
+      - "[Esperanto] The total number of nodes in the tree is not counted correctly."
+
+    - - matches
+      - (?is).*nombro de bestoj[^\\R]*3.*
+      - "[Esperanto] The total number of animals in the tree is not counted correctly."
+
+    - - matches
+      - (?is).*nombro de deklaroj[^\\R]*2.*
+      - "[Esperanto] The total number of animals in the tree is not counted correctly."
+
+    - - matches
+      - (?is).*alteco de la arbo[^\\R]*2.*
+      - "[Esperanto] The tree depth was calculated incorrectly."
+
+    - - matches
+      - (?is).*minimuma profundo[^\\R]*1.*
+      - "[Esperanto] The minimum tree depth was calculated incorrectly."
+
+    - - matches
+      - (?is).*averaĝa profundo[^\\R]*1[,.]7.*
+      - "[Esperanto] The average tree depth was calculated incorrectly."
+
+    - [input, "0"] # Exit from the application
+    - [finish, "The program should finish when user exit"]
+    - - file delete
+      - "animals_eo.{0}"
+      - "[Esperanto] The test can't delete animals_eo.{0} file."
+
+
+  learner_created: false
 - name: test/en.data.yaml
+  visible: false
+  text: |-
+    ---
+    - - yaml
+    - - json
+    - - xml
+  learner_created: false
+- name: test/eo.data.yaml
   visible: false
   text: |-
     ---
@@ -198,326 +510,269 @@ files:
 
 
   learner_created: false
-- name: test/eo.data.yaml
-  visible: false
-  text: |-
-    ---
-    - - yaml
-    - - json
-    - - xml
-  learner_created: false
-- name: test/eo.script.yaml
-  visible: false
-  text: |+
-    #
-    # There is a scenario of parameterized test for Esperanto language.
-    #
-    ---
-    - [start, "-type {0}"] # We will test three different file formats: JSON, YAML, XML
-    - - contains
-      - "kiun beston vi plej ŝatas?"
-      - "[Esperanto] When no Knowledge Tree is created yet the program should ask for a favourite animals at first."
-    - [input, kato]
-    - - contains
-      - bonvenon al la sperta sistemo de la besto!
-      - "[Esperanto] After entering the favourite animal the program should welcome the user and represent itself as an expert system"
-
-    #
-    # Start the menu
-    #
-    - - matches
-      - (?si).*Ludi.*Listo.*Serĉi.*Kalkuli.*Eliri.*
-      - "[Esperanto] The program should display the menu"
-
-    #
-    # Let's play the game!
-    #
-    - [input, 1]
-    - - contains
-      - vi pensu pri besto, kaj mi divenos ĝin.
-      - "[Esperanto] The program should asks the user to think of an animal"
-    - - contains
-      - premu enen kiam vi pretas.
-      - "[Esperanto] The computer should make a pause before the game."
-    - [input, ""]
-
-    #
-    # After user press Enter the game started!
-    #
-    - - contains
-      - ĉu ĝi estas kato?
-      - "[Esperanto] The very first question in the very first game should undoubtedly be about a beloved animal."
-    - [input, ne] # We think of about other animal, not about the cat
-    - - contains
-      - mi rezignas. kiun beston vi havas en la kapo?
-      - "[Esperanto] If the program cannot guess the animal, it must give up."
-    - [input, hundo] # Of course, our second animal is a dog!
-    - - contains
-      - indiku fakton, kiu distingas kato de hundo
-      - "[Esperanto] The program should find out how one animal differs from another."
-    - - input
-      - ĝi povas surgrimpi arbon
-    - - contains
-      - ĉu la aserto ĝustas por la hundo?
-      - "[Esperanto] The program should clarify if the statement is correct for a dog."
-    - [input, ne]
-
-    - - contains
-      - la kato povas surgrimpi arbon
-      - The program must generate the correct fact for the first animal.
-
-    - - contains
-      - la hundo ne povas surgrimpi arbon
-      - "[Esperanto] The program must generate the correct fact for the second animal."
-
-    - - matches
-      - "(?is).*(denove|ripeti|ankoraŭ).*"
-      - "[Esperanto] The program should ask the user to play again"
-    - [input, jes] # Yes, we will play once again
-    - [input, ""] # Press ENTER
-    - - contains
-      - povas surgrimpi arbon?
-      - "[Esperanto] After the first game, the starting question should be the question of fact."
-    - [input, jes]
-    - [contains, "ĉu ĝi estas kato?", "[Esperanto] The program must assume that the animal is a cat."]
-    - - input
-      - |
-        ne
-        linko
-        ĝi loĝas en la arbaro
-        jes
-        ne
-    # We finish the game.
-    - - matches
-      - (?si).*Ludi.*Listo.*Serĉi.*Kalkuli.*Eliri.*
-      - "[Esperanto] The program should display the menu"
-    - [input, "0"] # Exit from the application
-    - - matches
-      - "(?si).*(ĝis|estis).*"
-      - "[Esperanto] How about to say goodbye to the user?"
-    - [finish, "The program should finish when user exit"]
-    - - file exists
-      - "animals_eo.{0}"
-      - "The program should save knowledge tree to animals_eo.{0} file."
-    #
-    # After the first session the program created and save the Knowledge Tree
-    # We will run the program again to make sure that all data was saved and restored correctly.
-    #
-    - [start, "-type {0}"]
-    - - not contains
-      - kiun beston vi plej ŝatas?
-      - "[Esperanto] If the tree of knowledge exists, then the program should not ask the user about his favorite animal."
-    - - contains
-      - bonvenon al la sperta sistemo de la besto!
-      - "[Esperanto] The program should immediately greet the user after starting."
-    - - matches
-      - (?si).*Ludi.*Listo.*Serĉi.*Kalkuli.*Eliri.*
-      - "[Esperanto] The program should display the menu"
-
-    #
-    # Let's check which animals are now in our knowledge tree.
-    #
-    - [input, "2"]
-    - - matches
-      - (?si).*hundo.*kato.*linko.*
-      - "[Esperanto] The program should print a list of all animals in alphabetical order."
-
-    #
-    # Check the facts about the animal
-    #
-    - [input, "3"]
-    - - find
-      - enigu .* besto
-      - "[Esperanto] The program should ask the user to enter the name of the animal"
-    - [input, linko]
-    - - contains
-      - faktoj pri la linko
-      - "[Esperanto] The program must find the animal that is in the knowledge tree."
-    - - contains
-      - ĝi povas surgrimpi arbon
-      - "[Esperanto] The program did not print the first fact about the animal"
-    - - contains
-      - ĝi loĝas en la arbaro
-      - "[Esperanto] The program did not print the second fact about the animal"
-
-    #
-    # Check the knowledge tree statistics
-    #
-    - [input, "4"]
-    - [contains, "la statistiko", "The header for the table must be printed"]
-
-    - - matches
-      - (?is).*radika nodo.*povas surgrimpi arbon.*
-      - "[Esperanto] The root element in our tree must be a statement"
-
-    - - matches
-      - (?is).*nombro de nodoj[^\\R]*5.*
-      - "[Esperanto] The total number of nodes in the tree is not counted correctly."
-
-    - - matches
-      - (?is).*nombro de bestoj[^\\R]*3.*
-      - "[Esperanto] The total number of animals in the tree is not counted correctly."
-
-    - - matches
-      - (?is).*nombro de deklaroj[^\\R]*2.*
-      - "[Esperanto] The total number of animals in the tree is not counted correctly."
-
-    - - matches
-      - (?is).*alteco de la arbo[^\\R]*2.*
-      - "[Esperanto] The tree depth was calculated incorrectly."
-
-    - - matches
-      - (?is).*minimuma profundo[^\\R]*1.*
-      - "[Esperanto] The minimum tree depth was calculated incorrectly."
-
-    - - matches
-      - (?is).*averaĝa profundo[^\\R]*1[,.]7.*
-      - "[Esperanto] The average tree depth was calculated incorrectly."
-
-    - [input, "0"] # Exit from the application
-    - [finish, "The program should finish when user exit"]
-    - - file delete
-      - "animals_eo.{0}"
-      - "[Esperanto] The test can't delete animals_eo.{0} file."
-
-
-  learner_created: false
-- name: test/GuessAnimalTest.java
-  visible: false
-  text: |-
-    import org.hyperskill.hstest.dynamic.DynamicTest;
-    import org.hyperskill.hstest.stage.StageTest;
-    import org.hyperskill.hstest.testcase.CheckResult;
-
-    import java.io.File;
-    import java.io.IOException;
-    import java.util.Locale;
-    import java.util.stream.Stream;
-
-    public class GuessAnimalTest extends StageTest<String> {
-
-        String[] languages = new String[]{"en", "eo"};
-
-        @DynamicTest(data = "languages")
-        CheckResult testLanguages(final String language) throws IOException {
-            final var fileName = "animals" + ("en".equals(language) ? "." : "_" + language + ".");
-
-            final var locale = Locale.getDefault();
-            final var systemLanguage = System.getProperty("user.language");
-            Locale.setDefault(new Locale(language));
-            System.setProperty("user.language", language);
-
-            deleteFiles(fileName);
-            final var result = new Scenario(language).check();
-            deleteFiles(fileName);
-
-            Locale.setDefault(locale);
-            System.setProperty("user.language", systemLanguage);
-
-            return result;
-        }
-
-        private void deleteFiles(String fileName) {
-            Stream.of("yaml", "json", "xml")
-                    .map(fileName::concat)
-                    .map(File::new)
-                    .filter(File::exists)
-                    .forEach(File::delete);
-        }
-    }
-  learner_created: false
-- name: test/Scenario.java
-  visible: false
-  text: |-
-    import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-    import org.hyperskill.hstest.testcase.CheckResult;
-    import org.hyperskill.hstest.testing.TestedProgram;
-
-    import java.io.File;
-    import java.io.IOException;
-    import java.util.Map;
-    import java.util.function.Predicate;
-    import java.util.regex.Pattern;
-
-    import static java.text.MessageFormat.format;
-    import static java.util.function.Predicate.not;
-    import static org.hyperskill.hstest.testcase.CheckResult.correct;
-    import static org.hyperskill.hstest.testcase.CheckResult.wrong;
-
-    public class Scenario {
-        private TestedProgram main;
-        private String output = "";
-        private final File dataFile;
-        private final File scriptFile;
-
-        Scenario(String name) {
-            dataFile = new File("test/" + name + ".data.yaml");
-            scriptFile = new File("test/" + name + ".script.yaml");
-            System.out.println("Scenario '" + name + "' is started.");
-            System.out.println();
-        }
-
-        CheckResult check() {
-
-            final Object[][] data;
-            final String[][] script;
-
-            try {
-                data = new YAMLMapper().readValue(dataFile, String[][].class);
-                script = new YAMLMapper().readValue(scriptFile, String[][].class);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return wrong("Cannot find the files "
-                        + dataFile.getName()
-                        + " or "
-                        + scriptFile.getName()
-                        + ", looks like you deleted or renamed it. Please, revert the changes.");
-            }
-
-            for (var values : data) {
-                for (var action : script) {
-                    final var command = action[0];
-                    switch (command) {
-                        case "start":
-                            main = new TestedProgram();
-                            output = action.length == 1
-                                    ? main.start()
-                                    : main.start(format(action[1], values).split(" "));
-                            output = output.trim().toLowerCase();
-                            continue;
-                        case "input":
-                            output = main.execute(format(action[1], values)).trim().toLowerCase();
-                            continue;
-                        case "finish":
-                            if (main.isFinished()) {
-                                continue;
-                            }
-                            return wrong(format(action[1], values));
-                        default:
-                            final Map<String, Predicate<String>> validation = Map.of(
-                                    "contains", output::contains,
-                                    "not contains", not(output::contains),
-                                    "file exists", file -> new File(file).exists(),
-                                    "file delete", file -> new File(file).delete(),
-                                    "find", pattern -> Pattern.compile(pattern).matcher(output).find(),
-                                    "matches", output::matches);
-
-                            final var expected = format(action[1], values);
-                            if (validation.get(command).test(expected)) {
-                                continue;
-                            }
-                            final var feedback = format(action[2], values) + System.lineSeparator()
-                                    + "Expected " + command + ": \"" + expected + "\"" + System.lineSeparator()
-                                    + "Actual data is: \"" + output + "\".";
-                            return wrong(feedback);
-                    }
-                }
-            }
-            return correct();
-        }
-
-    }
-  learner_created: false
-feedback_link: https://hyperskill.org/projects/132/stages/708/implement#comment
-status: Unchecked
+- name: src/animals/Actions/Actions.java
+  visible: true
+  learner_created: true
+- name: src/animals/Actions/impl/Question.java
+  visible: true
+  learner_created: true
+- name: src/animals/Actions/impl/Statement.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Animal.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Fact.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Engine/GameMaster.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Engine/Interogator.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Engine/Interpreter.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Engine/UserInteraction.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Engine/BinaryTree/GameTree.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameComponents/Engine/BinaryTree/Node.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameInformation/GameInformation.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameInformation/InformationAccess.java
+  visible: true
+  learner_created: true
+- name: src/animals/GameInformation/Localizer.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/AskAnimal.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/Clarification.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/Confirmation.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/Goodbye.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/Greeting.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/InterpretFacts.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/Message.java
+  visible: true
+  learner_created: true
+- name: src/animals/Messages/NullMessage.java
+  visible: true
+  learner_created: true
+- name: src/animals/animals/AnimalComparison.java
+  visible: true
+  learner_created: true
+- name: src/animals/animals/Game.java
+  visible: true
+  learner_created: true
+- name: src/animals/binaryTree/AnimalNode.java
+  visible: true
+  learner_created: true
+- name: src/animals/binaryTree/AnimalTree.java
+  visible: true
+  learner_created: true
+- name: src/animals/animals/Node.java
+  visible: true
+  learner_created: true
+- name: src/animals/Main.java
+  visible: true
+  learner_created: true
+- name: src/animals/utils/Communicator.java
+  visible: true
+  learner_created: true
+- name: src/animals/base/Animal.java
+  visible: true
+  learner_created: true
+- name: src/animals/base/Application.java
+  visible: true
+  learner_created: true
+- name: src/animals/greet/Greeter.java
+  visible: true
+  learner_created: true
+- name: src/animals/greet/TimedGreeter.java
+  visible: true
+  learner_created: true
+- name: src/animals/input/Asker.java
+  visible: true
+  learner_created: true
+- name: src/animals/input/AskerBuilder.java
+  visible: true
+  learner_created: true
+- name: src/animals/input/ConcreteAsker.java
+  visible: true
+  learner_created: true
+- name: src/animals/input/PersistentAsker.java
+  visible: true
+  learner_created: true
+- name: src/animals/linguistics/Article.java
+  visible: true
+  learner_created: true
+- name: src/animals/linguistics/NounPhrase.java
+  visible: true
+  learner_created: true
+- name: src/animals/linguistics/PhraseUtils.java
+  visible: true
+  learner_created: true
+- name: src/animals/util/Range.java
+  visible: true
+  learner_created: true
+- name: src/animals/repository/KnowledgeTree.java
+  visible: true
+  learner_created: true
+- name: src/animals/repository/TreeNode.java
+  visible: true
+  learner_created: true
+- name: src/animals/repository/StorageService.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/Application.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/GuessingGame.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/LanguageRules.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/LocalMenu.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/Menu.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/TextInterface.java
+  visible: true
+  learner_created: true
+- name: src/animals/userinterface/TreeServices.java
+  visible: true
+  learner_created: true
+- name: src/main/resources/game.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/game_eo.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/main-menu.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/main-menu_eo.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/services.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/services_eo.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/tree-services.properties
+  visible: true
+  learner_created: true
+- name: src/main/resources/tree-services_eo.properties
+  visible: true
+  learner_created: true
+- name: src/animals/domain/KnowledgeTree.java
+  visible: true
+  learner_created: true
+- name: src/animals/domain/LanguageRules.java
+  visible: true
+  learner_created: true
+- name: src/animals/domain/TreeNode.java
+  visible: true
+  learner_created: true
+- name: src/animals/localization/Greetings.java
+  visible: true
+  learner_created: true
+- name: src/animals/localization/Greetings_eo.java
+  visible: true
+  learner_created: true
+- name: src/animals/localization/LanguageRules.java
+  visible: true
+  learner_created: true
+- name: src/animals/localization/LanguageRules_eo.java
+  visible: true
+  learner_created: true
+- name: src/animals/localization/SentenceGenerator.java
+  visible: true
+  learner_created: true
+- name: src/animals/repository/KnowledgeBase.java
+  visible: true
+  learner_created: true
+- name: src/animals/repository/KnowledgeBaseJackson.java
+  visible: true
+  learner_created: true
+- name: src/animals/ui/Application.java
+  visible: true
+  learner_created: true
+- name: src/animals/ui/Game.java
+  visible: true
+  learner_created: true
+- name: src/animals/ui/Menu.java
+  visible: true
+  learner_created: true
+- name: src/animals/ui/Services.java
+  visible: true
+  learner_created: true
+- name: src/animals/ui/TreeServices.java
+  visible: true
+  learner_created: true
+- name: src/animals/ui/UI.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/11084#comment
+status: Failed
+feedback:
+  message: "Wrong answer in test #1\n\nThe program should clarify if the statement\
+    \ is correct for a dog.\r\nExpected find: &quot;is .+ correct for a dog?&quot;\r\
+    \nActual data is: &quot;is the statement correct for the dog?&quot;.\n\nPlease\
+    \ find below the output of your program during this failed test.\nNote that the\
+    \ &#39;&gt;&#39; character indicates the beginning of the input line.\n\n---\n\
+    \nArguments: -type yaml\n\nstdout:\nScenario &#39;en&#39; is started.\n\nHello!\n\
+    \nI want to learn about animals.\nWhich animal do you like most?\n&gt; cat\nWelcome\
+    \ to the animals expert system!\n\nWhat do you want to do:\n\n 1. Play the guessing\
+    \ game\n 2. List of all animals\n 3. Search for an animal\n 4. Calculate statistics\n\
+    \ 5. Delete an animal\n 6. Print the Knowledge Tree\n 0. Exit\n &gt; 1\nYou think\
+    \ of an animal, and I guess it.\nPress enter when youre ready.\n&gt; \nIs it a\
+    \ cat?\n&gt; No\nI give up. What animal do you have in mind?\n&gt; dog\nSpecify\
+    \ a fact that distinguishes a dog from a cat:\nThe sentence should be of the format:\
+    \ It can/has/is ....\n&gt; it can climb trees\nIs the statement correct for the\
+    \ dog?\n\nstderr:\nMar 07, 2022 5:08:45 PM animals.repository.KnowledgeBaseJackson\
+    \ load\nWARNING: The knowledge Tree has not been loaded.\njava.io.FileNotFoundException:\
+    \ animals.yaml (The system cannot find the file specified)\n\tat java.base/java.io.FileInputStream.open0(Native\
+    \ Method)\n\tat java.base/java.io.FileInputStream.open(FileInputStream.java:216)\n\
+    \tat java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:157)\n\
+    \tat com.fasterxml.jackson.dataformat.yaml.YAMLFactory.createParser(YAMLFactory.java:343)\n\
+    \tat com.fasterxml.jackson.dataformat.yaml.YAMLFactory.createParser(YAMLFactory.java:14)\n\
+    \tat com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3331)\n\
+    \tat animals.repository.KnowledgeBaseJackson.load(KnowledgeBaseJackson.java:27)\n\
+    \tat animals.ui.Application.&lt;init&gt;(Application.java:19)\n\tat animals.Main.main(Main.java:24)\n\
+    \tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\
+    \tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)\n\
+    \tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\
+    \tat java.base/java.lang.reflect.Method.invoke(Method.java:568)\n\tat org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)\n\
+    \tat org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)\n\
+    \tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)\n\
+    \tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)\n\tat\
+    \ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)\n\
+    \tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)\n\
+    \tat java.base/java.lang.Thread.run(Thread.java:833)\n\nMar 07, 2022 5:08:45 PM\
+    \ animals.repository.KnowledgeBaseJackson load\nINFO: The Knowledge Tree has loaded\
+    \ successful."
+  time: Mon, 07 Mar 2022 16:08:46 UTC
 record: -1

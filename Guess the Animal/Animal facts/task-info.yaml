@@ -100,6 +100,138 @@ files:
 
     }
   learner_created: false
+- name: test/GuessAnimalTest.java
+  visible: false
+  text: |+
+    import org.hyperskill.hstest.dynamic.DynamicTest;
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+
+    import java.io.IOException;
+
+    public class GuessAnimalTest extends StageTest<String> {
+
+        final String[] script = new String[]{
+                "incorrect-statement",
+                "correct-statement",
+                "complete-scenario",
+                "facts-and-question"
+        };
+
+        @DynamicTest(data = "script")
+        CheckResult runScripts(final String script) throws IOException {
+            return new Scenario(script).check();
+        }
+
+    }
+
+  learner_created: false
+- name: src/animals/Logic.java
+  visible: true
+  text: |-
+    package animals;
+
+    public class Logic {
+        public static int randomIntBetween(int start, int end) {
+            return ((Long) Math.round(Math.random() * (end - 1))).intValue() + start;
+        }
+    }
+  learner_created: true
+- name: src/animals/AnswerConstants.java
+  visible: true
+  text: |-
+    package animals;
+
+    import java.util.List;
+    import java.util.Locale;
+    import java.util.regex.Pattern;
+
+    public enum AnswerConstants {
+        YES(List.of("Yes"), List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct", "indeed", "you bet", "exactly", "you said it")),
+        NO(List.of("No"), List.of("n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no")),
+        OTHER(List.of("Come on, yes or no?",
+                "I'm not sure I caught you: was it yes or no?",
+                "Funny, I still don't understand, is it yes or no?",
+                "Oh, it's too complicated for me: just tell me yes or no.",
+                "Could you please simply say yes or no?",
+                "Oh, no, don't try to confuse me: say yes or no."),
+                List.of());
+
+        private final List<String> machineAnswers;
+        private final List<String> synonims;
+
+        AnswerConstants(List<String> machineAnswers, List<String> synonims) {
+            this.machineAnswers = machineAnswers;
+            this.synonims = synonims;
+        }
+
+        public String getMachineAnswer() {
+            if (this == AnswerConstants.OTHER) {
+                return OTHER.machineAnswers.get(Logic.randomIntBetween(0, this.machineAnswers.size()));
+            }
+            return this.machineAnswers.get(0);
+        }
+
+        public static AnswerConstants getUserAnswer(String userAnswer) {
+            if (NO.synonims.stream().map(c -> Pattern.compile(c + "[!.]?")).anyMatch(c -> c.matcher(userAnswer.toLowerCase(Locale.ROOT).trim()).matches())) {
+                return NO;
+            }
+
+            if (YES.synonims.stream().map(c -> Pattern.compile(c + "[!.]?")).anyMatch(c -> c.matcher(userAnswer.toLowerCase(Locale.ROOT).trim()).matches())) {
+                return YES;
+            }
+
+            return OTHER;
+        }
+    }
+  learner_created: true
+- name: src/animals/FarewellsAndGreetings.java
+  visible: true
+  text: |-
+    package animals;
+
+    import java.util.List;
+
+    public enum FarewellsAndGreetings {
+        GREETING(List.of("Good morning!", "Good afternoon!", "Good evening!")),
+        FAREWELL(List.of("Have a nice day!", "See you soon!", "Bye!"));
+
+        private final List<String> texts;
+
+        FarewellsAndGreetings(List<String> texts) {
+            this.texts = texts;
+        }
+
+        public static String generateFarewell() {
+            return FAREWELL.texts.get(Logic.randomIntBetween(0, FAREWELL.texts.size()));
+        }
+
+        public static String generateGreeting() {
+            return GREETING.texts.get(Logic.randomIntBetween(0, GREETING.texts.size()));
+        }
+    }
+  learner_created: true
+- name: test/correct-statement.script.yaml
+  visible: false
+  text: |
+    #
+    # This is a script to test correct statements.
+    #
+    ---
+    - [start]
+    - [input, cat]
+    - [input, dog]
+    - - contains
+      - Specify a fact that distinguishes a cat from a dog.
+      - The program should asks the user for a fact
+    #
+    # Here we substitute all correct statements from data file
+    #
+    - [input, "{0}"]
+    - - contains
+      - correct for a dog?
+      - The program should clarify if the statement is correct for a dog.
+  learner_created: false
 - name: test/incorrect-statement.script.yaml
   visible: false
   text: |
@@ -120,6 +252,123 @@ files:
     - - contains
       - "examples of a statement"
       - "The statement \"{0}\" doesn't fit the template. The program should show examples and ask the user again."
+  learner_created: false
+- name: test/complete-scenario.data.yaml
+  visible: false
+  text: |
+    #
+    # The data for the complete scenario from the start to the finish
+    #
+    ---
+    - - "cat"
+      - "DOG"
+      - "a cat"
+      - "a dog"
+      - "It can climb trees"
+      - "ha"
+      - "no"
+      - "The cat can climb trees"
+      - "The dog can't climb trees"
+      - "Can it climb trees?"
+
+    - - "hare"
+      - "wolf"
+      - "a hare"
+      - "a wolf"
+      - "It is a shy animal"
+      - "nej"
+      - "no"
+      - "The hare is a shy animal"
+      - "The wolf isn't a shy animal"
+      - "Is it a shy animal?"
+
+    - - "a lynx"
+      - "an unicorN"
+      - "a lynx"
+      - "an unicorn"
+      - "It is a fabulous animal?"
+      - "of c"
+      - "yes"
+      - "The lynx isn't a fabulous animal"
+      - "The unicorn is a fabulous animal"
+      - "Is it a fabulous animal?"
+  learner_created: false
+- name: test/incorrect-statement.data.yaml
+  visible: false
+  text: |
+    #
+    # All of these statements are wrong.
+    #
+    ---
+    - - "The dog barks"
+    - - "The cat meows"
+    - - "I don't know..."
+    - - "Who knows?"
+    - - "It flies"
+    - - "It barks"
+    - - "Can it fly?"
+    - - "It fly"
+    - - "may be it barks?"
+    - - "I do not what to say..."
+  learner_created: false
+- name: test/facts-and-question.data.yaml
+  visible: false
+  text: |
+    #
+    # This is a data file to test generated facts and a question
+    #
+
+    # --- user input ---
+    # The first animal
+    # The second animal
+    # The statement
+    # Is the statement correct for the second animal?
+
+    # --- expected output ---
+    # The fact for the first animal
+    # The fact for the second animal
+    # The closed question to distinguishes one animal from other
+    ---
+    - - cat
+      - shark
+      - it is a mammal
+      - no
+      - "The cat is a mammal."
+      - "The shark isn't a mammal."
+      - "Is it a mammal?"
+
+    - - wolf
+      - hare
+      - it is a shy animal
+      - yes
+      - "The wolf isn't a shy animal."
+      - "The hare is a shy animal."
+      - "Is it a shy animal?"
+
+
+    - - wolf
+      - fox
+      - it has a long bushy tail
+      - yes
+      - "The wolf doesn't have a long bushy tail."
+      - "The fox has a long bushy tail."
+      - "Does it have a long bushy tail?"
+
+    - - dog
+      - cat
+      - it can climb trees
+      - yes
+      - "The dog can't climb trees."
+      - "The cat can climb trees."
+      - "Can it climb trees?"
+
+    - - dog
+      - fox
+      - it is living in the forest
+      - yes
+      - "The dog isn't living in the forest."
+      - "The fox is living in the forest."
+      - "Is it living in the forest?"
   learner_created: false
 - name: test/correct-statement.data.yaml
   visible: false
@@ -181,32 +430,6 @@ files:
     - - finish
       - The program should finish after the correct response.
   learner_created: false
-- name: test/GuessAnimalTest.java
-  visible: false
-  text: |+
-    import org.hyperskill.hstest.dynamic.DynamicTest;
-    import org.hyperskill.hstest.stage.StageTest;
-    import org.hyperskill.hstest.testcase.CheckResult;
-
-    import java.io.IOException;
-
-    public class GuessAnimalTest extends StageTest<String> {
-
-        final String[] script = new String[]{
-                "incorrect-statement",
-                "correct-statement",
-                "complete-scenario",
-                "facts-and-question"
-        };
-
-        @DynamicTest(data = "script")
-        CheckResult runScripts(final String script) throws IOException {
-            return new Scenario(script).check();
-        }
-
-    }
-
-  learner_created: false
 - name: test/facts-and-question.script.yaml
   visible: false
   text: |-
@@ -239,144 +462,9 @@ files:
 
     - [finish, The program should finish.]
   learner_created: false
-- name: test/facts-and-question.data.yaml
-  visible: false
-  text: |
-    #
-    # This is a data file to test generated facts and a question
-    #
-
-    # --- user input ---
-    # The first animal
-    # The second animal
-    # The statement
-    # Is the statement correct for the second animal?
-
-    # --- expected output ---
-    # The fact for the first animal
-    # The fact for the second animal
-    # The closed question to distinguishes one animal from other
-    ---
-    - - cat
-      - shark
-      - it is a mammal
-      - no
-      - "The cat is a mammal."
-      - "The shark isn't a mammal."
-      - "Is it a mammal?"
-
-    - - wolf
-      - hare
-      - it is a shy animal
-      - yes
-      - "The wolf isn't a shy animal."
-      - "The hare is a shy animal."
-      - "Is it a shy animal?"
-
-
-    - - wolf
-      - fox
-      - it has a long bushy tail
-      - yes
-      - "The wolf doesn't have a long bushy tail."
-      - "The fox has a long bushy tail."
-      - "Does it have a long bushy tail?"
-
-    - - dog
-      - cat
-      - it can climb trees
-      - yes
-      - "The dog can't climb trees."
-      - "The cat can climb trees."
-      - "Can it climb trees?"
-
-    - - dog
-      - fox
-      - it is living in the forest
-      - yes
-      - "The dog isn't living in the forest."
-      - "The fox is living in the forest."
-      - "Is it living in the forest?"
-  learner_created: false
-- name: test/correct-statement.script.yaml
-  visible: false
-  text: |
-    #
-    # This is a script to test correct statements.
-    #
-    ---
-    - [start]
-    - [input, cat]
-    - [input, dog]
-    - - contains
-      - Specify a fact that distinguishes a cat from a dog.
-      - The program should asks the user for a fact
-    #
-    # Here we substitute all correct statements from data file
-    #
-    - [input, "{0}"]
-    - - contains
-      - correct for a dog?
-      - The program should clarify if the statement is correct for a dog.
-  learner_created: false
-- name: test/complete-scenario.data.yaml
-  visible: false
-  text: |
-    #
-    # The data for the complete scenario from the start to the finish
-    #
-    ---
-    - - "cat"
-      - "DOG"
-      - "a cat"
-      - "a dog"
-      - "It can climb trees"
-      - "ha"
-      - "no"
-      - "The cat can climb trees"
-      - "The dog can't climb trees"
-      - "Can it climb trees?"
-
-    - - "hare"
-      - "wolf"
-      - "a hare"
-      - "a wolf"
-      - "It is a shy animal"
-      - "nej"
-      - "no"
-      - "The hare is a shy animal"
-      - "The wolf isn't a shy animal"
-      - "Is it a shy animal?"
-
-    - - "a lynx"
-      - "an unicorN"
-      - "a lynx"
-      - "an unicorn"
-      - "It is a fabulous animal?"
-      - "of c"
-      - "yes"
-      - "The lynx isn't a fabulous animal"
-      - "The unicorn is a fabulous animal"
-      - "Is it a fabulous animal?"
-  learner_created: false
-- name: test/incorrect-statement.data.yaml
-  visible: false
-  text: |
-    #
-    # All of these statements are wrong.
-    #
-    ---
-    - - "The dog barks"
-    - - "The cat meows"
-    - - "I don't know..."
-    - - "Who knows?"
-    - - "It flies"
-    - - "It barks"
-    - - "Can it fly?"
-    - - "It fly"
-    - - "may be it barks?"
-    - - "I do not what to say..."
-  learner_created: false
-feedback_link: https://hyperskill.org/projects/132/stages/704/implement#comment
-status: Unchecked
-record: -1
+feedback_link: https://hyperskill.org/learn/step/11080#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 06 Mar 2022 20:35:06 UTC
+record: 2

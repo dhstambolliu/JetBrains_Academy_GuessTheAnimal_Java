@@ -29,7 +29,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">0</div>
+<div class="counter">1</div>
 <p>failures</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">2.439s</div>
+<div class="counter">0.690s</div>
 <p>duration</p>
 </div>
 </td>
@@ -50,8 +50,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
-<div class="percent">100%</div>
+<div class="infoBox failures" id="successRate">
+<div class="percent">0%</div>
 <p>successful</p>
 </div>
 </td>
@@ -61,13 +61,143 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Tests</a>
+<a href="#tab0">Failed tests</a>
 </li>
 <li>
-<a href="#tab1">Standard output</a>
+<a href="#tab1">Tests</a>
+</li>
+<li>
+<a href="#tab2">Standard output</a>
+</li>
+<li>
+<a href="#tab3">Standard error</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<div class="test">
+<a name="start"></a>
+<h3 class="failures">start</h3>
+<span class="code">
+<pre>java.lang.AssertionError: Wrong answer in test #1
+
+The program should clarify if the statement is correct for a dog.
+Expected find: &quot;is .+ correct for a dog?&quot;
+Actual data is: &quot;is the statement correct for the dog?&quot;.
+
+Please find below the output of your program during this failed test.
+Note that the '&gt;' character indicates the beginning of the input line.
+
+---
+
+Arguments: -type yaml
+
+stdout:
+Scenario 'en' is started.
+
+Hello!
+
+I want to learn about animals.
+Which animal do you like most?
+&gt; cat
+Welcome to the animals expert system!
+
+What do you want to do:
+
+ 1. Play the guessing game
+ 2. List of all animals
+ 3. Search for an animal
+ 4. Calculate statistics
+ 5. Delete an animal
+ 6. Print the Knowledge Tree
+ 0. Exit
+ &gt; 1
+You think of an animal, and I guess it.
+Press enter when youre ready.
+&gt; 
+Is it a cat?
+&gt; No
+I give up. What animal do you have in mind?
+&gt; dog
+Specify a fact that distinguishes a dog from a cat:
+The sentence should be of the format: It can/has/is ....
+&gt; it can climb trees
+Is the statement correct for the dog?
+
+stderr:
+Mar 07, 2022 5:08:45 PM animals.repository.KnowledgeBaseJackson load
+WARNING: The knowledge Tree has not been loaded.
+java.io.FileNotFoundException: animals.yaml (The system cannot find the file specified)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:216)
+	at java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:157)
+	at com.fasterxml.jackson.dataformat.yaml.YAMLFactory.createParser(YAMLFactory.java:343)
+	at com.fasterxml.jackson.dataformat.yaml.YAMLFactory.createParser(YAMLFactory.java:14)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3331)
+	at animals.repository.KnowledgeBaseJackson.load(KnowledgeBaseJackson.java:27)
+	at animals.ui.Application.&lt;init&gt;(Application.java:19)
+	at animals.Main.main(Main.java:24)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+
+Mar 07, 2022 5:08:45 PM animals.repository.KnowledgeBaseJackson load
+INFO: The Knowledge Tree has loaded successful.
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.hyperskill.hstest.stage.StageTest.start(StageTest.java:155)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:110)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:38)
+	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:62)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at jdk.proxy1/jdk.proxy1.$Proxy2.processTestClass(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:176)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:133)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:71)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+</pre>
+</span>
+</div>
+</div>
+<div id="tab1" class="tab">
 <h2>Tests</h2>
 <table>
 <thead>
@@ -78,903 +208,79 @@
 </tr>
 </thead>
 <tr>
-<td class="success">start</td>
-<td class="success">2.439s</td>
-<td class="success">passed</td>
+<td class="failures">start</td>
+<td class="failures">0.690s</td>
+<td class="failures">failed</td>
 </tr>
 </table>
 </div>
-<div id="tab1" class="tab">
+<div id="tab2" class="tab">
 <h2>Standard output</h2>
 <span class="code">
 <pre>?[1;31m
 Start test 1?[0m
-Scenario 'animals' is started.
+Scenario 'en' is started.
 
-Good morning!
+Hello!
+
+I want to learn about animals.
+Which animal do you like most?
 &gt; cat
-Is it a cat?
-Good afternoon!
-&gt; CAT
-Is it a cat?
-Good afternoon!
-&gt; Cat
-Is it a cat?
-Good afternoon!
-&gt; a cat
-Is it a cat?
-Good morning!
-&gt; A cat
-Is it a cat?
-Good afternoon!
-&gt; the cat
-Is it a cat?
-Good morning!
-&gt; ape
-Is it an ape?
-Good evening!
-&gt; an ape
-Is it an ape?
-Good afternoon!
-&gt; the ape
-Is it an ape?
-Good evening!
-&gt; a unicorn
-Is it a unicorn?
-Good evening!
-&gt; a xantic sargo
-Is it a xantic sargo?
-Good afternoon!
-&gt; xantic sargo
-Is it a xantic sargo?
-Good afternoon!
-&gt; an xeme
-Is it an xeme?
-Good morning!
-&gt; RacOON
-Is it a racoon?
-Good evening!
-&gt; dog
-Is it a dog?
-Good evening!
-&gt; a dog
-Is it a dog?
-Good afternoon!
-&gt; the dog
-Is it a dog?
-Good evening!
-&gt; owl
-Is it an owl?
-Good evening!
-&gt; an owl
-Is it an owl?
-Good afternoon!
-&gt; the owl
-Is it an owl?
-?[1;31m
-Start test 2?[0m
-Scenario 'positive-answers' is started.
+Welcome to the animals expert system!
 
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; y
-You answered: Yes
+What do you want to do:
 
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Y
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; y.
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Y.
-You answered: Yes
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; y!
-You answered: Yes
-
-See you soon!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; Y!
-You answered: Yes
-
-Bye!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt;    Yes
-You answered: Yes
-
-Bye!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Yes   
-You answered: Yes
-
-Have a nice day!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Yes
-You answered: Yes
-
-Bye!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; YES
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes.
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; Yes!
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; YES!
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; yES!
-You answered: Yes
-
-See you soon!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; YeS
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Yeah
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; yeah
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; Yeah!
-You answered: Yes
-
-Have a nice day!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; YeAh.
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; YEAH
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yep
-You answered: Yes
-
-Bye!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; yEp
-You answered: Yes
-
-See you soon!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; Yep!
-You answered: Yes
-
-Have a nice day!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; YEP.
-You answered: Yes
-
-Have a nice day!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; sure
-You answered: Yes
-
-Bye!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; Sure!
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; SURE!
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; surE.
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; right
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Right.
-You answered: Yes
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Right!
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; affirmative
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Affirmative!
-You answered: Yes
-
-Bye!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; correct
-You answered: Yes
-
-Have a nice day!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; correct.
-You answered: Yes
-
-Bye!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; indeed
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; you bet
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; exactly
-You answered: Yes
-
-Bye!
-?[1;31m
-Start test 3?[0m
-Scenario 'negative-answers' is started.
-
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; n
-You answered: No
-
-See you soon!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; N
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; n.
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; N.
-You answered: No
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; n!
-You answered: No
-
-Have a nice day!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; N!
-You answered: No
-
-Bye!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt;    No
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; No   
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; no
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; nO
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; NO
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
+ 1. Play the guessing game
+ 2. List of all animals
+ 3. Search for an animal
+ 4. Calculate statistics
+ 5. Delete an animal
+ 6. Print the Knowledge Tree
+ 0. Exit
+ &gt; 1
+You think of an animal, and I guess it.
+Press enter when youre ready.
+&gt; 
 Is it a cat?
 &gt; No
-You answered: No
+I give up. What animal do you have in mind?
+&gt; dog
+Specify a fact that distinguishes a dog from a cat:
+The sentence should be of the format: It can/has/is ....
+&gt; it can climb trees
+Is the statement correct for the dog?
+</pre>
+</span>
+</div>
+<div id="tab3" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>Mar 07, 2022 5:08:45 PM animals.repository.KnowledgeBaseJackson load
+WARNING: The knowledge Tree has not been loaded.
+java.io.FileNotFoundException: animals.yaml (The system cannot find the file specified)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:216)
+	at java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:157)
+	at com.fasterxml.jackson.dataformat.yaml.YAMLFactory.createParser(YAMLFactory.java:343)
+	at com.fasterxml.jackson.dataformat.yaml.YAMLFactory.createParser(YAMLFactory.java:14)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3331)
+	at animals.repository.KnowledgeBaseJackson.load(KnowledgeBaseJackson.java:27)
+	at animals.ui.Application.&lt;init&gt;(Application.java:19)
+	at animals.Main.main(Main.java:24)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
 
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; no.
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; no!
-You answered: No
-
-Bye!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; No!
-You answered: No
-
-Bye!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; NO!
-You answered: No
-
-Bye!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; no way
-You answered: No
-
-Bye!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; no way!
-You answered: No
-
-Bye!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; No Way!
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; NO WAY!
-You answered: No
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; no waY.
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; nah
-You answered: No
-
-See you soon!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; Nah.
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; NAH!
-You answered: No
-
-See you soon!
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; naH
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; nope
-You answered: No
-
-Have a nice day!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; NoPe!
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; NOPE.
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; negative
-You answered: No
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Negative.
-You answered: No
-
-Bye!
-?[1;31m
-Start test 4?[0m
-Scenario 'unclear-answers' is started.
-
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; y..
-I'm not sure I caught you: was it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Y!.
-I'm not sure I caught you: was it yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; ye
-Funny, I still don't understand, is it yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; jes
-Could you please simply say yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Jes
-Could you please simply say yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes...
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; да
-Could you please simply say yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; Так
-Oh, it's too complicated for me: just tell me yes or no.
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes, yes
-I'm not sure I caught you: was it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Yea
-Oh, it's too complicated for me: just tell me yes or no.
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Ja
-Funny, I still don't understand, is it yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; Jawohl!
-I'm not sure I caught you: was it yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; ja natürlich!
-Funny, I still don't understand, is it yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; so genau
-Come on, yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; 1
-Oh, no, don't try to confuse me: say yes or no.
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; +
-I'm not sure I caught you: was it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yepi
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Yep!!
-I'm not sure I caught you: was it yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; Yes, sure!
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Ok
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; Rights
-Oh, no, don't try to confuse me: say yes or no.
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; affErmative
-Funny, I still don't understand, is it yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; n..
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; N!!
-I'm not sure I caught you: was it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; nea
-Could you please simply say yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; nop
-I'm not sure I caught you: was it yes or no?
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; noppi
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; no wa
-Oh, it's too complicated for me: just tell me yes or no.
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; no way!!!
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; na
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; nahi
-Could you please simply say yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; nega
-Could you please simply say yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; negat
-I'm not sure I caught you: was it yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; negati
-Come on, yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; negativ
-Come on, yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; i don't think..
-Could you please simply say yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; i don't
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; i
-Oh, it's too complicated for me: just tell me yes or no.
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; I no
-Oh, it's too complicated for me: just tell me yes or no.
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; i don't think so...
-I'm not sure I caught you: was it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; null
-Oh, it's too complicated for me: just tell me yes or no.
-?[1;31m
-Start test 5?[0m
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-Bye!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-Bye!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-Bye!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-See you soon!
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-See you soon!
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; yes
-You answered: Yes
-
-Have a nice day!
-?[1;31m
-Start test 6?[0m
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; #
-Oh, no, don't try to confuse me: say yes or no.
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; #
-I'm not sure I caught you: was it yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; #
-Funny, I still don't understand, is it yes or no?
-Good evening!
-&gt; cat
-Is it a cat?
-&gt; #
-Oh, no, don't try to confuse me: say yes or no.
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; #
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; #
-Funny, I still don't understand, is it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; #
-Oh, it's too complicated for me: just tell me yes or no.
-Good morning!
-&gt; cat
-Is it a cat?
-&gt; #
-Oh, it's too complicated for me: just tell me yes or no.
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; #
-I'm not sure I caught you: was it yes or no?
-Good afternoon!
-&gt; cat
-Is it a cat?
-&gt; #
-Funny, I still don't understand, is it yes or no?
+Mar 07, 2022 5:08:45 PM animals.repository.KnowledgeBaseJackson load
+INFO: The Knowledge Tree has loaded successful.
 </pre>
 </span>
 </div>
@@ -986,7 +292,7 @@ Funny, I still don't understand, is it yes or no?
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 7.3.3</a> at Mar 6, 2022, 9:26:04 PM</p>
+<a href="http://www.gradle.org">Gradle 7.3.3</a> at Mar 7, 2022, 5:08:45 PM</p>
 </div>
 </div>
 </body>

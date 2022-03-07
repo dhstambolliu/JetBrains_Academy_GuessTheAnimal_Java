@@ -30,14 +30,6 @@ files:
       - "yes or no"
       - "The answer \"{0}\" is unclear and the program should ask again."
   learner_created: false
-- name: test/file-formats.data.yaml
-  visible: false
-  text: |-
-    ---
-    - - json
-    - - xml
-    - - yaml
-  learner_created: false
 - name: test/Scenario.java
   visible: false
   text: |-
@@ -381,6 +373,37 @@ files:
     - [uniCorn, an unicorn]
     - [linX, a linx]
   learner_created: false
+- name: test/positive-answers.script.yaml
+  visible: false
+  text: |+
+    #
+    # This is a script to test the correct interpretation of negative responses.
+    #
+    ---
+    - [start]
+    - [input, cat]
+    - [input, ""]   # Press Enter to start the game
+    #
+    # The game started
+    #
+    - [contains, "Is it a cat?", "The program should ask: \"Is it a cat?\""]
+    #
+    # Here we substitute all values from the data file
+    #
+    - [input, "{0}"]
+    - - not contains
+      - "yes or no"
+      - "The answer \"{0}\" should be treated as correct positive."
+
+  learner_created: false
+- name: test/file-formats.data.yaml
+  visible: false
+  text: |-
+    ---
+    - - json
+    - - xml
+    - - yaml
+  learner_created: false
 - name: test/file-formats.script.yaml
   visible: false
   text: |+
@@ -490,29 +513,126 @@ files:
       - "The test can't delete animals.{0} file."
 
   learner_created: false
-- name: test/positive-answers.script.yaml
-  visible: false
-  text: |+
-    #
-    # This is a script to test the correct interpretation of negative responses.
-    #
-    ---
-    - [start]
-    - [input, cat]
-    - [input, ""]   # Press Enter to start the game
-    #
-    # The game started
-    #
-    - [contains, "Is it a cat?", "The program should ask: \"Is it a cat?\""]
-    #
-    # Here we substitute all values from the data file
-    #
-    - [input, "{0}"]
-    - - not contains
-      - "yes or no"
-      - "The answer \"{0}\" should be treated as correct positive."
+- name: src/animals/model/Animal.java
+  visible: true
+  text: |-
+    package animals;
 
-  learner_created: false
-feedback_link: https://hyperskill.org/projects/132/stages/706/implement#comment
-status: Unchecked
-record: -1
+    public class Animal extends Node {
+        private final String name;
+        private final String indefiniteArticle;
+
+        public Animal(String indefiniteArticle, String name) {
+            this.name = name;
+            if (indefiniteArticle == null || indefiniteArticle.equals("the")) {
+                this.indefiniteArticle = GrammarUtils.indefiniteArticleOf(name);
+            } else {
+                this.indefiniteArticle = indefiniteArticle;
+            }
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getIndefiniteArticle() {
+            return indefiniteArticle;
+        }
+
+        public String toString() {
+            return  indefiniteArticle + " " + name;
+        }
+
+    }
+  learner_created: true
+- name: src/animals/model/Fact.java
+  visible: true
+  text: |-
+    package animals;
+
+    public class Fact {
+        private final String verb;
+        private final String predicate;
+
+        public Fact(String verb, String fact) {
+            this.verb = verb;
+            this.predicate = fact;
+        }
+
+        public String getPredicate() {
+            return predicate;
+        }
+
+        public String getVerb() {
+            return verb;
+        }
+
+        public String getQuestionForm() {
+            return String.format("%s %s?", GrammarUtils.questionFormOf(verb), predicate);
+        }
+
+        public String getNegatedVerbForm() {
+            return GrammarUtils.negateVerb(verb);
+        }
+    }
+  learner_created: true
+- name: src/animals/model/Node.java
+  visible: true
+  text: |-
+    package animals;
+
+    public abstract class Node {
+
+        protected Node leftNode;
+        protected Node rightNode;
+
+        public Node getLeftNode() {
+            return leftNode;
+        }
+
+        public void setLeftNode(Node leftNode) {
+            this.leftNode = leftNode;
+        }
+
+        public Node getRightNode() {
+            return rightNode;
+        }
+
+        public void setRightNode(Node rightNode) {
+            this.rightNode = rightNode;
+        }
+    }
+  learner_created: true
+- name: src/animals/model/Distinction.java
+  visible: true
+  learner_created: true
+- name: src/animals/service/MapperHelper.java
+  visible: true
+  learner_created: true
+- name: src/animals/userInterface/Sentences.java
+  visible: true
+  learner_created: true
+- name: src/animals/userInterface/UI.java
+  visible: true
+  learner_created: true
+- name: src/animals/utils/Pair.java
+  visible: true
+  learner_created: true
+- name: src/animals/testing/MainTest.java
+  visible: true
+  learner_created: true
+- name: src/animals/testing/TestUtils.java
+  visible: true
+  learner_created: true
+- name: src/animals/testing/WordServiceTests.java
+  visible: true
+  learner_created: true
+- name: src/animals/userInterface/WordService.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/11082#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 06 Mar 2022 22:11:55 UTC
+record: 4

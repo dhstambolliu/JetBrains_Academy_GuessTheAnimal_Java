@@ -1,0 +1,10 @@
+---
+data: "it is a mammal"
+"yes":
+  data: "it can climb tree"
+  "yes":
+    data: "a cat"
+  "no":
+    data: "a dog"
+"no":
+  data: "a shark"
